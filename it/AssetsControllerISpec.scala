@@ -33,7 +33,7 @@ class AssetsControllerISpec extends IntegrationSpecBase {
     s"http://localhost:$port/assets"
   }
 
-  val environments = List("local", "qa", "staging", "prod")
+  val environments = List("test", "prod")
 
   val wsdlBaseUrls =
     environments.map(env => s"$baseUrl/$env/eu/outbound/CR-for-NES-Services/")

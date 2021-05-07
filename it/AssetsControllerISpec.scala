@@ -51,8 +51,20 @@ class AssetsControllerISpec extends IntegrationSpecBase {
       "IE4S02updateERiskAnalysisResult",
       "IE4S01updateEScreeningResult"
     ),
-    "BusinessActivityService/ICS/RiskAnalysisOrchestrationBAS/V1/CCN2.Service.Customs.Default.ICS.RiskAnalysisOrchestrationBAS_1.0.0_1.0.0.wsdl" -> List.empty,
-    "BusinessActivityService/ICS/ReferralManagementBAS/V1/CCN2.Service.Customs.Default.ICS.ReferralManagementBAS_1.0.0_CCN2_1.0.0.wsdl" -> List.empty
+    "BusinessActivityService/ICS/ReferralManagementBAS/V1/CCN2.Service.Customs.Default.ICS.ReferralManagementBAS_1.0.0_CCN2_1.0.0.wsdl" -> List(
+      "IE4Q04requestAdditionalInformation",
+      "IE4R02provideAdditionalInformation",
+      "IE4Q05requestHRCM",
+      "IE4R03provideHRCMResult"
+    ),
+    "BusinessActivityService/ICS/AEONotificationBAS/V1/CCN2.Service.Customs.Default.ICS.AEONotificationBAS_1.0.0_CCN2_1.0.0.wsdl" -> List(
+      "IE4N11notifyAEOControl"
+    ),
+    "BusinessActivityService/ICS/ENSLifecycleManagementBAS/V1/CCN2.Service.Customs.Default.ICS.ENSLifecycleManagementBAS_1.0.0_CCN2_1.0.0.wsdl" -> List(
+      "IE4S03submitControlResult",
+      "IE4N10submitPresentationInformation",
+      "IE4Q08revokePresentation"
+    )
   )
 
   "all EU Files within public folder" when {

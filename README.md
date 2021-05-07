@@ -13,7 +13,10 @@ Run Integration Tests: `sbt it:test`
 ## GET /assets/:prodOrTest/eu/outbound/CR-for-NES-Services/:fileNameAndPath
 
 Where 
-- `:prodOrTest` is prod for production environment or test for all other environments
+- `:prodOrTest` is one of:
+ - prod for production environment
+ - test for all other environments
+Both prod and test contain the same files structure but the `soap12:address location` and `wsa:Address` within the files differ depending on the environment. 
 - `:fileNameAndPath` could be  any file within the `CR-for-NES-Services` file structure in the `public` folder
 
 With some common top level files referenced below, used in the `import-control-outbound-proxy` microservice

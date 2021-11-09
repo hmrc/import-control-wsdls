@@ -4,12 +4,12 @@ import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 val appName = "import-control-wsdls"
 
-val silencerVersion = "1.7.0"
+val silencerVersion = "1.7.5"
 
 lazy val coverageSettings: Seq[Setting[_]] = {
   Seq(
     ScoverageKeys.coverageExcludedPackages := "<empty>;Reverse.*;models/.data/..*;view.*;models.*;config.*;.*(BuildInfo|Routes).*",
-    ScoverageKeys.coverageMinimum := 100,
+    ScoverageKeys.coverageMinimumStmtTotal := 100,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true
   )
@@ -24,7 +24,7 @@ lazy val microservice = Project(appName, file("."))
   )
   .settings(
     majorVersion := 0,
-    scalaVersion := "2.12.11",
+    scalaVersion := "2.12.14",
     parallelExecution in IntegrationTest := false,
     parallelExecution in Test := false,
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,

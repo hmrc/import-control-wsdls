@@ -18,24 +18,19 @@ lazy val coverageSettings: Seq[Setting[_]] = {
 lazy val scalaStyleSettings = Seq(scalastyleFailOnError := true)
 
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(
-    play.sbt.PlayScala,
-    SbtDistributablesPlugin
-  )
+  .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .settings(
     majorVersion := 0,
     scalaVersion := "2.12.15",
-    parallelExecution in IntegrationTest := false,
-    parallelExecution in Test := false,
+    (IntegrationTest / parallelExecution) := false,
+    (Test / parallelExecution) := false,
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
     PlayKeys.playDefaultPort := 7208,
     // ***************
     // Use the silencer plugin to suppress warnings
     scalacOptions += "-P:silencer:pathFilters=routes",
     libraryDependencies ++= Seq(
-      compilerPlugin(
-        "com.github.ghik" % "silencer-plugin" % silencerVersion cross CrossVersion.full
-      ),
+      compilerPlugin("com.github.ghik" % "silencer-plugin" % silencerVersion cross CrossVersion.full),
       "com.github.ghik" % "silencer-lib" % silencerVersion % Provided cross CrossVersion.full
     )
     // ***************
@@ -45,6 +40,4 @@ lazy val microservice = Project(appName, file("."))
   .configs(IntegrationTest)
   .settings(integrationTestSettings(): _*)
   .settings(resolvers += Resolver.jcenterRepo)
-  .settings(
-    (managedClasspath in IntegrationTest) += (packageBin in Assets).value
-  )
+  .settings((IntegrationTest / managedClasspath) += (Assets / packageBin).value)

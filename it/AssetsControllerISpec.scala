@@ -29,9 +29,7 @@ import scala.xml.XML
 
 class AssetsControllerISpec extends IntegrationSpecBase {
 
-  val wsdlBaseUrl = {
-    s"http://localhost:$port/assets/eu/outbound/CR-for-NES-Services/"
-  }
+  val wsdlBaseUrl = s"http://localhost:$port/assets/eu/outbound/CR-for-NES-Services/"
 
   val wsdlOperationsForFileNames = Map(
     "BusinessActivityService/ICS/ReferralManagementBAS/V1/CCN2.Service.Customs.Default.ICS.ReferralManagementBAS_1.0.0_CCN2_1.0.0.wsdl" -> List(
@@ -66,20 +64,12 @@ class AssetsControllerISpec extends IntegrationSpecBase {
   "all EU Files within public folder" should {
     val xmlSchemaExtension = ".xsd"
     val xmlWsdlExtension   = ".wsdl"
-    val baseDirectory = new File(
-      app.path.getCanonicalPath + s"/public/eu/outbound/CR-for-NES-Services"
-    )
-    val allFilesFromEU =
-      recursiveListFiles(baseDirectory)
-        .filter(_.isFile)
-        .filterNot(_.isHidden)
+    val baseDirectory      = new File(app.path.getCanonicalPath + s"/public/eu/outbound/CR-for-NES-Services")
+    val allFilesFromEU     = recursiveListFiles(baseDirectory).filter(_.isFile).filterNot(_.isHidden)
 
     "be correct amount of xsds and wsdls" in {
-      allFilesFromEU.count(
-        file =>
-          file.getName.contains(xmlSchemaExtension) || file.getName
-            .contains(xmlWsdlExtension)
-      )                     shouldBe 65
+      allFilesFromEU.count(file => file.getName.contains(xmlSchemaExtension) || file.getName.contains(xmlWsdlExtension)) shouldBe 65
+
       allFilesFromEU.length shouldBe 65
     }
 
@@ -88,40 +78,24 @@ class AssetsControllerISpec extends IntegrationSpecBase {
     }
 
     s"return ${Status.OK} and parse to xml" when {
-      allFilesFromEU.foreach(
-        eachFile =>
-          s"file is ${eachFile.getName}" in {
-            val pathToFile =
-              eachFile.getCanonicalPath
-                .split("/CR-for-NES-Services/")(1)
-                .trim
-            val resultOfGettingAsset = await(
-              buildClient(
-                s"/assets/eu/outbound/CR-for-NES-Services/$pathToFile"
-              ).get()
-            )
-            resultOfGettingAsset.status shouldBe Status.OK
+      allFilesFromEU.foreach { eachFile =>
+        s"file is ${eachFile.getName}" in {
+          val pathToFile           = eachFile.getCanonicalPath.split("/CR-for-NES-Services/")(1).trim
+          val resultOfGettingAsset = await(buildClient(s"/assets/eu/outbound/CR-for-NES-Services/$pathToFile").get())
+          resultOfGettingAsset.status shouldBe Status.OK
 
-            val sourceOfFile = Source.fromFile(eachFile, "UTF-8")
-            val byteArrayStreamOfFile =
-              new ByteArrayInputStream(
-                sourceOfFile.mkString.getBytes("UTF-8")
-              )
-            val byeArrayStreamOfBody = new ByteArrayInputStream(
-              resultOfGettingAsset.body.getBytes("UTF-8")
-            )
-            val fileFromDirectoryParsed =
-              Try(XML.load(byteArrayStreamOfFile))
+          val sourceOfFile            = Source.fromFile(eachFile, "UTF-8")
+          val byteArrayStreamOfFile   = new ByteArrayInputStream(sourceOfFile.mkString.getBytes("UTF-8"))
+          val byeArrayStreamOfBody    = new ByteArrayInputStream(resultOfGettingAsset.body.getBytes("UTF-8"))
+          val fileFromDirectoryParsed = Try(XML.load(byteArrayStreamOfFile))
 
-            fileFromDirectoryParsed.get shouldBe XML.load(
-              byeArrayStreamOfBody
-            )
+          fileFromDirectoryParsed.get shouldBe XML.load(byeArrayStreamOfBody)
 
-            sourceOfFile.close()
-            byteArrayStreamOfFile.close()
-            byeArrayStreamOfBody.close()
+          sourceOfFile.close()
+          byteArrayStreamOfFile.close()
+          byeArrayStreamOfBody.close()
         }
-      )
+      }
     }
   }
 
@@ -129,10 +103,9 @@ class AssetsControllerISpec extends IntegrationSpecBase {
     case (fileName, wsdlOperationList) =>
       s"$wsdlBaseUrl" when {
         s"a request is made for $fileName" should {
-          val operations = parseWsdlAndGetOperationsNames(wsdlBaseUrl + fileName)
           wsdlOperationList.foreach { wsdlOperation =>
             s"include the operation $wsdlOperation" in {
-              operations should contain(wsdlOperation)
+              parseWsdlAndGetOperationsNames(wsdlBaseUrl + fileName) should contain(wsdlOperation)
             }
           }
         }
@@ -145,12 +118,10 @@ class AssetsControllerISpec extends IntegrationSpecBase {
   }
 
   def parseWsdlAndGetOperationsNames(wsdlUrl: String): List[String] = {
-    val reader: WSDLReader =
-      WSDLUtil.newWSDLReaderWithPopulatedExtensionRegistry
+    val reader: WSDLReader = WSDLUtil.newWSDLReaderWithPopulatedExtensionRegistry
     reader.setFeature("javax.wsdl.importDocuments", true)
     val wsdlDefinition = reader.readWSDL(wsdlUrl)
-    val portType =
-      wsdlDefinition.getAllPortTypes.asScala.values.head.asInstanceOf[PortType]
+    val portType       = wsdlDefinition.getAllPortTypes.asScala.values.head.asInstanceOf[PortType]
     portType.getOperations.asScala.map(_.asInstanceOf[Operation].getName).toList
   }
 }

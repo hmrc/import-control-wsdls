@@ -11,13 +11,10 @@ This service is used to get files for ICS2.
 
 Run Integration Tests: `sbt it:test`
 
-## GET /assets/:prodOrTest/eu/outbound/CR-for-NES-Services/:fileNameAndPath
+## GET /assets/eu/outbound/CR-for-NES-Services/:fileNameAndPath
 
 
 Where 
-- `:prodOrTest` is one of:
- - ~~prod for production environment~~
- - **test for all environments (prod folder is currently tech debt until further notice)**
  - `:fileNameAndPath` could be  any file within the `CR-for-NES-Services` file structure in the `public` folder
  
 With some common top level files referenced below, used in the `import-control-outbound-proxy` microservice

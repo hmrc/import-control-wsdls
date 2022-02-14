@@ -2,4 +2,5 @@
 ->         /                          health.Routes
 
 GET        /admin/metrics             com.kenshoo.play.metrics.MetricsController.metrics
+GET        /assets/test/*file         uk.gov.hmrc.importcontrolwsdls.controllers.AssetsController.at(file: String)
 GET        /assets/*file              uk.gov.hmrc.importcontrolwsdls.controllers.AssetsController.at(file: String)

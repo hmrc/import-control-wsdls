@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://xmlns.ec.eu/BusinessActivityService/ICS/ICRErrorNotificationBAS/V2" xmlns:servicestype="urn:wco:datamodel:eu:ics2:2" targetNamespace="http://xmlns.ec.eu/BusinessActivityService/ICS/ICRErrorNotificationBAS/V2">
+  <xs:import namespace="urn:wco:datamodel:eu:ics2:2" schemaLocation="../../../../BusinessObjects/ICS/Common/V2/CRErrorNotificationBASServiceType.xsd" />
+  <xs:element name="IE4N99notifyErrorReqMsg" type="servicestype:IE4N99RequestType">
+    <xs:annotation>
+      <xs:documentation>Request message for the IE4N99notifyError operation of the CRErrorNotificationBAS</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+</xs:schema>

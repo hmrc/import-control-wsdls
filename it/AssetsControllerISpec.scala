@@ -63,6 +63,19 @@ class AssetsControllerISpec extends IntegrationSpecBase {
   )
 
   val wsdlOperationsForFileNamesV2 = Map(
+    "BusinessActivityService/ICS/AEONotificationBAS/V2/CCN2.Service.Customs.EU.ICS.AEONotificationBAS_2.0.0_CCN2_2.0.0.wsdl" -> List(
+      "IE4N11notifyAEOControl"
+    ),
+    "BusinessActivityService/ICS/CRErrorNotificationBAS/V2/CCN2.Service.Customs.EU.ICS.CRErrorNotificationBAS_2.0.0_CCN2_2.0.0.wsdl" -> List(
+      "IE4N99notifyError"
+    ),
+    "BusinessActivityService/ICS/ENSLifecycleManagementBAS/V2/CCN2.Service.Customs.EU.ICS.ENSLifecycleManagementBAS_2.0.0_CCN2_2.0.0.wsdl" -> List(
+      "IE4N07notifyArrival",
+      "IE4N09notifyControlDecision",
+      "IE4N10submitPresentationInformation",
+      "IE4S03submitControlResult",
+      "IE4Q08revokePresentation"
+    ),
     "BusinessActivityService/ICS/ReferralManagementBAS/V2/CCN2.Service.Customs.EU.ICS.ReferralManagementBAS_2.0.0_CCN2_2.0.0.wsdl" -> List(
       "IE4Q04requestAdditionalInformation",
       "IE4R02provideAdditionalInformation",
@@ -75,22 +88,6 @@ class AssetsControllerISpec extends IntegrationSpecBase {
       "IE4S02submitRiskAnalysisResult",
       "IE4S02updateERiskAnalysisResult",
       "IE4S01updateEScreeningResult"
-    ),
-    "BusinessActivityService/ICS/ReferralManagementBAS/V2/CCN2.Service.Customs.EU.ICS.ReferralManagementBAS_2.0.0_CCN2_2.0.0.wsdl" -> List(
-      "IE4Q04requestAdditionalInformation",
-      "IE4R02provideAdditionalInformation",
-      "IE4Q05requestHRCM",
-      "IE4R03provideHRCMResult"
-    ),
-    "BusinessActivityService/ICS/AEONotificationBAS/V2/CCN2.Service.Customs.EU.ICS.AEONotificationBAS_2.0.0_CCN2_2.0.0.wsdl" -> List(
-      "IE4N11notifyAEOControl"
-    ),
-    "BusinessActivityService/ICS/ENSLifecycleManagementBAS/V2/CCN2.Service.Customs.EU.ICS.ENSLifecycleManagementBAS_2.0.0_CCN2_2.0.0.wsdl" -> List(
-      "IE4N07notifyArrival",
-      "IE4N09notifyControlDecision",
-      "IE4S03submitControlResult",
-      "IE4N10submitPresentationInformation",
-      "IE4Q08revokePresentation"
     )
   )
 

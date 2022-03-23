@@ -175,7 +175,7 @@ class AssetsControllerISpec extends IntegrationSpecBase {
   }
 
   def countAllWSDLandXSDFiles(files: Array[File]): Int = {
-    files.count(file => file.getName.contains(".xsd") || file.getName.contains(".wsdl"))
+    files.count(file => file.getName.endsWith(".xsd") || file.getName.endsWith(".wsdl"))
   }
 
   def checkForDestinationIdElement(files: Array[File]): Boolean = {

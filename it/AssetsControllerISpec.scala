@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-import java.io.{ByteArrayInputStream, File}
-
 import helpers.IntegrationSpecBase
-import javax.wsdl.xml.WSDLReader
-import javax.wsdl.{Operation, PortType}
 import org.apache.axis2.wsdl.WSDLUtil
 import play.api.http.Status
 
+import java.io.{ByteArrayInputStream, File}
+import javax.wsdl.xml.WSDLReader
+import javax.wsdl.{Operation, PortType}
 import scala.collection.JavaConverters._
 import scala.io.Source
 import scala.util.Try
@@ -33,6 +32,17 @@ class AssetsControllerISpec extends IntegrationSpecBase {
   val wsdlBaseUrlV2 = s"http://localhost:$port/assets/eu/outbound/CR-for-NES-Services-V2/"
 
   val wsdlOperationsForFileNamesV1 = Map(
+    "BusinessActivityService/ICS/AEONotificationBAS/V1/CCN2.Service.Customs.Default.ICS.AEONotificationBAS_1.0.0_CCN2_1.0.0.wsdl" -> List(
+      "IE4N11notifyAEOControl"
+    ),
+    "BusinessActivityService/ICS/CRErrorNotificationBAS/V1/CCN2.Service.Customs.Default.ICS.CRErrorNotificationBAS_1.0.0_CCN2_1.0.0.wsdl" -> List(
+      "IE4N99notifyError"
+    ),
+    "BusinessActivityService/ICS/ENSLifecycleManagementBAS/V1/CCN2.Service.Customs.Default.ICS.ENSLifecycleManagementBAS_1.0.0_CCN2_1.0.0.wsdl" -> List(
+      "IE4S03submitControlResult",
+      "IE4N10submitPresentationInformation",
+      "IE4Q08revokePresentation"
+    ),
     "BusinessActivityService/ICS/ReferralManagementBAS/V1/CCN2.Service.Customs.Default.ICS.ReferralManagementBAS_1.0.0_CCN2_1.0.0.wsdl" -> List(
       "IE4Q04requestAdditionalInformation",
       "IE4R02provideAdditionalInformation",
@@ -45,20 +55,6 @@ class AssetsControllerISpec extends IntegrationSpecBase {
       "IE4S02submitRiskAnalysisResult",
       "IE4S02updateERiskAnalysisResult",
       "IE4S01updateEScreeningResult"
-    ),
-    "BusinessActivityService/ICS/ReferralManagementBAS/V1/CCN2.Service.Customs.Default.ICS.ReferralManagementBAS_1.0.0_CCN2_1.0.0.wsdl" -> List(
-      "IE4Q04requestAdditionalInformation",
-      "IE4R02provideAdditionalInformation",
-      "IE4Q05requestHRCM",
-      "IE4R03provideHRCMResult"
-    ),
-    "BusinessActivityService/ICS/AEONotificationBAS/V1/CCN2.Service.Customs.Default.ICS.AEONotificationBAS_1.0.0_CCN2_1.0.0.wsdl" -> List(
-      "IE4N11notifyAEOControl"
-    ),
-    "BusinessActivityService/ICS/ENSLifecycleManagementBAS/V1/CCN2.Service.Customs.Default.ICS.ENSLifecycleManagementBAS_1.0.0_CCN2_1.0.0.wsdl" -> List(
-      "IE4S03submitControlResult",
-      "IE4N10submitPresentationInformation",
-      "IE4Q08revokePresentation"
     )
   )
 
@@ -116,46 +112,12 @@ class AssetsControllerISpec extends IntegrationSpecBase {
       checkForDestinationIdElement(allFilesFromEuV2) shouldBe false
     }
 
-    s"return ${Status.OK} and parse to xml when using V1" when {
-      allFilesFromEuV1.foreach { eachFile =>
-        s"file is ${eachFile.getName}" in {
-          val pathToFile           = eachFile.getCanonicalPath.split("/CR-for-NES-Services/")(1).trim
-          val resultOfGettingAsset = await(buildClient(s"/assets/eu/outbound/CR-for-NES-Services/$pathToFile").get())
-          resultOfGettingAsset.status shouldBe Status.OK
-
-          val sourceOfFile            = Source.fromFile(eachFile, "UTF-8")
-          val byteArrayStreamOfFile   = new ByteArrayInputStream(sourceOfFile.mkString.getBytes("UTF-8"))
-          val byeArrayStreamOfBody    = new ByteArrayInputStream(resultOfGettingAsset.body.getBytes("UTF-8"))
-          val fileFromDirectoryParsed = Try(XML.load(byteArrayStreamOfFile))
-
-          fileFromDirectoryParsed.get shouldBe XML.load(byeArrayStreamOfBody)
-
-          sourceOfFile.close()
-          byteArrayStreamOfFile.close()
-          byeArrayStreamOfBody.close()
-        }
-      }
+    s"return ${Status.OK} and parse to xml when using V1 WSDLs and XSDs" when {
+      checkAndParseXML(allFilesFromEuV1)
     }
 
-    s"return ${Status.OK} and parse to xml when using V2" when {
-      allFilesFromEuV2.foreach { eachFile =>
-        s"file is ${eachFile.getName}" in {
-          val pathToFile           = eachFile.getCanonicalPath.split("/CR-for-NES-Services-V2/")(1).trim
-          val resultOfGettingAsset = await(buildClient(s"/assets/eu/outbound/CR-for-NES-Services-V2/$pathToFile").get())
-          resultOfGettingAsset.status shouldBe Status.OK
-
-          val sourceOfFile            = Source.fromFile(eachFile, "UTF-8")
-          val byteArrayStreamOfFile   = new ByteArrayInputStream(sourceOfFile.mkString.getBytes("UTF-8"))
-          val byeArrayStreamOfBody    = new ByteArrayInputStream(resultOfGettingAsset.body.getBytes("UTF-8"))
-          val fileFromDirectoryParsed = Try(XML.load(byteArrayStreamOfFile))
-
-          fileFromDirectoryParsed.get shouldBe XML.load(byeArrayStreamOfBody)
-
-          sourceOfFile.close()
-          byteArrayStreamOfFile.close()
-          byeArrayStreamOfBody.close()
-        }
-      }
+    s"return ${Status.OK} and parse to xml when using V2 WSDLs and XSDs" when {
+      checkAndParseXML(allFilesFromEuV2)
     }
   }
 
@@ -180,6 +142,27 @@ class AssetsControllerISpec extends IntegrationSpecBase {
 
   def checkForDestinationIdElement(files: Array[File]): Boolean = {
     files.exists(_.getName.contains("{DestinationID}"))
+  }
+
+  def checkAndParseXML(files: Array[File]): Unit = {
+    files.foreach { eachFile =>
+      s"file is ${eachFile.getName}" in {
+        val pathToFile = eachFile.getCanonicalPath.split("/public/")(1).trim
+        val resultOfGettingAsset = await(buildClient(s"/assets/$pathToFile").get())
+        resultOfGettingAsset.status shouldBe Status.OK
+
+        val sourceOfFile            = Source.fromFile(eachFile, "UTF-8")
+        val byteArrayStreamOfFile   = new ByteArrayInputStream(sourceOfFile.mkString.getBytes("UTF-8"))
+        val byeArrayStreamOfBody    = new ByteArrayInputStream(resultOfGettingAsset.body.getBytes("UTF-8"))
+        val fileFromDirectoryParsed = Try(XML.load(byteArrayStreamOfFile))
+
+        fileFromDirectoryParsed.get shouldBe XML.load(byeArrayStreamOfBody)
+
+        sourceOfFile.close()
+        byteArrayStreamOfFile.close()
+        byeArrayStreamOfBody.close()
+      }
+    }
   }
 
   def recursiveListFiles(f: File): Array[File] = {

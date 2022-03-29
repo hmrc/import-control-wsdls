@@ -32,9 +32,9 @@
 	</wsdl:binding>
 	<wsdl:service name="CCN2.Service.Platform.AcknowledgementService_CR">
 		<wsdl:port name="AcknowledgementServicePort" binding="tns:AcknowledgementServiceBinding">
-			<soap:address location="http://172.22.53.112/osb-proxy/ics2/CRAcknowledgement/2.0/service"/>
+			<soap:address location="https://172.22.53.112/osb-proxy/ics2/CRAcknowledgement/2.0/service"/>
 			<wsa:EndpointReference>
-				<wsa:Address>http://172.22.53.112/osb-proxy/ics2/CRAcknowledgement/2.0/service</wsa:Address>
+				<wsa:Address>https://172.22.53.112/osb-proxy/ics2/CRAcknowledgement/2.0/service</wsa:Address>
 				<wsa:Metadata>
 					<ccn2:ServiceID>CCN2.Service.Infra.Default.Platform.AcknowledgementService_CR</ccn2:ServiceID>
 					<ccn2:ServiceName>CCN2 Acknowledgement Service</ccn2:ServiceName>

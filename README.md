@@ -44,7 +44,7 @@ HTTP Status code of 200 is returned with the file when `:fileNameAndPath` exists
 
 ### Notes for Developer updating the files to the latest version
 
-- Previous Version of EU requirements `V2.21` (Feb 2022), Current Version of EU requirements (March 2022)
+- Previous Version of EU requirements `V1.24`, Current Version of EU requirements `V2.21` (March 2022)
 - The folder structure was directly copied from the EU documentation for both V1 and V2
 - Renamed the top level folders be to `CR-for-NES-Services` and `CR-for-NES-Services-V2`
 - We replaced `{DestinationID}` in all filenames that contained it with `EU.CR`

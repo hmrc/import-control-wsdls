@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-import java.io.{ByteArrayInputStream, File}
-
 import helpers.IntegrationSpecBase
-import javax.wsdl.xml.WSDLReader
-import javax.wsdl.{Operation, PortType}
 import org.apache.axis2.wsdl.WSDLUtil
 import play.api.http.Status
 
+import java.io.{ByteArrayInputStream, File}
+import javax.wsdl.xml.WSDLReader
+import javax.wsdl.{Operation, PortType}
 import scala.collection.JavaConverters._
 import scala.io.Source
 import scala.util.Try
@@ -29,9 +28,21 @@ import scala.xml.XML
 
 class AssetsControllerISpec extends IntegrationSpecBase {
 
-  val wsdlBaseUrl = s"http://localhost:$port/assets/eu/outbound/CR-for-NES-Services/"
+  val wsdlBaseUrlV1 = s"http://localhost:$port/assets/eu/outbound/CR-for-NES-Services/"
+  val wsdlBaseUrlV2 = s"http://localhost:$port/assets/eu/outbound/CR-for-NES-Services-V2/"
 
-  val wsdlOperationsForFileNames = Map(
+  val wsdlOperationsForFileNamesV1 = Map(
+    "BusinessActivityService/ICS/AEONotificationBAS/V1/CCN2.Service.Customs.Default.ICS.AEONotificationBAS_1.0.0_CCN2_1.0.0.wsdl" -> List(
+      "IE4N11notifyAEOControl"
+    ),
+    "BusinessActivityService/ICS/CRErrorNotificationBAS/V1/CCN2.Service.Customs.Default.ICS.CRErrorNotificationBAS_1.0.0_CCN2_1.0.0.wsdl" -> List(
+      "IE4N99notifyError"
+    ),
+    "BusinessActivityService/ICS/ENSLifecycleManagementBAS/V1/CCN2.Service.Customs.Default.ICS.ENSLifecycleManagementBAS_1.0.0_CCN2_1.0.0.wsdl" -> List(
+      "IE4S03submitControlResult",
+      "IE4N10submitPresentationInformation",
+      "IE4Q08revokePresentation"
+    ),
     "BusinessActivityService/ICS/ReferralManagementBAS/V1/CCN2.Service.Customs.Default.ICS.ReferralManagementBAS_1.0.0_CCN2_1.0.0.wsdl" -> List(
       "IE4Q04requestAdditionalInformation",
       "IE4R02provideAdditionalInformation",
@@ -44,72 +55,114 @@ class AssetsControllerISpec extends IntegrationSpecBase {
       "IE4S02submitRiskAnalysisResult",
       "IE4S02updateERiskAnalysisResult",
       "IE4S01updateEScreeningResult"
+    )
+  )
+
+  val wsdlOperationsForFileNamesV2 = Map(
+    "BusinessActivityService/ICS/AEONotificationBAS/V2/CCN2.Service.Customs.EU.ICS.AEONotificationBAS_2.0.0_CCN2_2.0.0.wsdl" -> List(
+      "IE4N11notifyAEOControl"
     ),
-    "BusinessActivityService/ICS/ReferralManagementBAS/V1/CCN2.Service.Customs.Default.ICS.ReferralManagementBAS_1.0.0_CCN2_1.0.0.wsdl" -> List(
+    "BusinessActivityService/ICS/CRErrorNotificationBAS/V2/CCN2.Service.Customs.EU.ICS.CRErrorNotificationBAS_2.0.0_CCN2_2.0.0.wsdl" -> List(
+      "IE4N99notifyError"
+    ),
+    "BusinessActivityService/ICS/ENSLifecycleManagementBAS/V2/CCN2.Service.Customs.EU.ICS.ENSLifecycleManagementBAS_2.0.0_CCN2_2.0.0.wsdl" -> List(
+      "IE4N07notifyArrival",
+      "IE4N09notifyControlDecision",
+      "IE4N10submitPresentationInformation",
+      "IE4S03submitControlResult",
+      "IE4Q08revokePresentation"
+    ),
+    "BusinessActivityService/ICS/ReferralManagementBAS/V2/CCN2.Service.Customs.EU.ICS.ReferralManagementBAS_2.0.0_CCN2_2.0.0.wsdl" -> List(
       "IE4Q04requestAdditionalInformation",
       "IE4R02provideAdditionalInformation",
       "IE4Q05requestHRCM",
       "IE4R03provideHRCMResult"
     ),
-    "BusinessActivityService/ICS/AEONotificationBAS/V1/CCN2.Service.Customs.Default.ICS.AEONotificationBAS_1.0.0_CCN2_1.0.0.wsdl" -> List(
-      "IE4N11notifyAEOControl"
-    ),
-    "BusinessActivityService/ICS/ENSLifecycleManagementBAS/V1/CCN2.Service.Customs.Default.ICS.ENSLifecycleManagementBAS_1.0.0_CCN2_1.0.0.wsdl" -> List(
-      "IE4S03submitControlResult",
-      "IE4N10submitPresentationInformation",
-      "IE4Q08revokePresentation"
+    "BusinessActivityService/ICS/RiskAnalysisOrchestrationBAS/V2/CCN2.Service.Customs.EU.ICS.RiskAnalysisOrchestrationBAS_2.0.0_CCN2_2.0.0.wsdl" -> List(
+      "IE4N03notifyERiskAnalysisHit",
+      "IE4S01submitEScreeningAssessment",
+      "IE4S02submitRiskAnalysisResult",
+      "IE4S02updateERiskAnalysisResult",
+      "IE4S01updateEScreeningResult"
     )
   )
 
+  checkWsdlOperations(wsdlOperationsForFileNamesV1, wsdlBaseUrlV1)
+  checkWsdlOperations(wsdlOperationsForFileNamesV2, wsdlBaseUrlV2)
+
   "all EU Files within public folder" should {
-    val xmlSchemaExtension = ".xsd"
-    val xmlWsdlExtension   = ".wsdl"
-    val baseDirectory      = new File(app.path.getCanonicalPath + s"/public/eu/outbound/CR-for-NES-Services")
-    val allFilesFromEU     = recursiveListFiles(baseDirectory).filter(_.isFile).filterNot(_.isHidden)
+    val baseDirectoryV1    = new File(app.path.getCanonicalPath + s"/public/eu/outbound/CR-for-NES-Services")
+    val baseDirectoryV2    = new File(app.path.getCanonicalPath + s"/public/eu/outbound/CR-for-NES-Services-V2")
+    val allFilesFromEuV1   = recursiveListFiles(baseDirectoryV1).filter(_.isFile).filterNot(_.isHidden)
+    val allFilesFromEuV2   = recursiveListFiles(baseDirectoryV2).filter(_.isFile).filterNot(_.isHidden)
 
-    "be correct amount of xsds and wsdls" in {
-      allFilesFromEU.count(file => file.getName.contains(xmlSchemaExtension) || file.getName.contains(xmlWsdlExtension)) shouldBe 65
-
-      allFilesFromEU.length shouldBe 65
+    "have correct amount of WSDLs and XSDs for V1" in {
+      countAllWSDLandXSDFiles(allFilesFromEuV1) shouldBe 65
     }
 
-    "not contain {DestinationID} as this should have been replaced" in {
-      allFilesFromEU.exists(_.getName.contains("{DestinationID}")) shouldBe false
+    "have correct amount of WSDLs and XSDs for V2" in {
+      countAllWSDLandXSDFiles(allFilesFromEuV2) shouldBe 69
     }
 
-    s"return ${Status.OK} and parse to xml" when {
-      allFilesFromEU.foreach { eachFile =>
-        s"file is ${eachFile.getName}" in {
-          val pathToFile           = eachFile.getCanonicalPath.split("/CR-for-NES-Services/")(1).trim
-          val resultOfGettingAsset = await(buildClient(s"/assets/eu/outbound/CR-for-NES-Services/$pathToFile").get())
-          resultOfGettingAsset.status shouldBe Status.OK
+    "not contain {DestinationID} as this should have been replaced for V1" in {
+      checkForDestinationIdElement(allFilesFromEuV1) shouldBe false
+    }
 
-          val sourceOfFile            = Source.fromFile(eachFile, "UTF-8")
-          val byteArrayStreamOfFile   = new ByteArrayInputStream(sourceOfFile.mkString.getBytes("UTF-8"))
-          val byeArrayStreamOfBody    = new ByteArrayInputStream(resultOfGettingAsset.body.getBytes("UTF-8"))
-          val fileFromDirectoryParsed = Try(XML.load(byteArrayStreamOfFile))
+    "not contain {DestinationID} as this should have been replaced for V2" in {
+      checkForDestinationIdElement(allFilesFromEuV2) shouldBe false
+    }
 
-          fileFromDirectoryParsed.get shouldBe XML.load(byeArrayStreamOfBody)
+    s"return ${Status.OK} and parse to xml when using V1 WSDLs and XSDs" when {
+      checkAndParseXML(allFilesFromEuV1)
+    }
 
-          sourceOfFile.close()
-          byteArrayStreamOfFile.close()
-          byeArrayStreamOfBody.close()
-        }
-      }
+    s"return ${Status.OK} and parse to xml when using V2 WSDLs and XSDs" when {
+      checkAndParseXML(allFilesFromEuV2)
     }
   }
 
-  wsdlOperationsForFileNames.foreach {
-    case (fileName, wsdlOperationList) =>
-      s"$wsdlBaseUrl" when {
-        s"a request is made for $fileName" should {
-          wsdlOperationList.foreach { wsdlOperation =>
-            s"include the operation $wsdlOperation" in {
-              parseWsdlAndGetOperationsNames(wsdlBaseUrl + fileName) should contain(wsdlOperation)
+  def checkWsdlOperations(wsdls: Map[String, List[String]], wsdlBaseUrl: String): Unit = {
+    wsdls.foreach {
+      case (fileName, wsdlOperationList) =>
+        s"$wsdlBaseUrl" when {
+          s"a request is made for $fileName" should {
+            wsdlOperationList.foreach { wsdlOperation =>
+              s"include the operation $wsdlOperation" in {
+                parseWsdlAndGetOperationsNames(wsdlBaseUrl + fileName) should contain(wsdlOperation)
+              }
             }
           }
         }
+    }
+  }
+
+  def countAllWSDLandXSDFiles(files: Array[File]): Int = {
+    files.count(file => file.getName.endsWith(".xsd") || file.getName.endsWith(".wsdl"))
+  }
+
+  def checkForDestinationIdElement(files: Array[File]): Boolean = {
+    files.exists(_.getName.contains("{DestinationID}"))
+  }
+
+  def checkAndParseXML(files: Array[File]): Unit = {
+    files.foreach { eachFile =>
+      s"file is ${eachFile.getName}" in {
+        val pathToFile = eachFile.getCanonicalPath.split("/public/")(1).trim
+        val resultOfGettingAsset = await(buildClient(s"/assets/$pathToFile").get())
+        resultOfGettingAsset.status shouldBe Status.OK
+
+        val sourceOfFile            = Source.fromFile(eachFile, "UTF-8")
+        val byteArrayStreamOfFile   = new ByteArrayInputStream(sourceOfFile.mkString.getBytes("UTF-8"))
+        val byeArrayStreamOfBody    = new ByteArrayInputStream(resultOfGettingAsset.body.getBytes("UTF-8"))
+        val fileFromDirectoryParsed = Try(XML.load(byteArrayStreamOfFile))
+
+        fileFromDirectoryParsed.get shouldBe XML.load(byeArrayStreamOfBody)
+
+        sourceOfFile.close()
+        byteArrayStreamOfFile.close()
+        byeArrayStreamOfBody.close()
       }
+    }
   }
 
   def recursiveListFiles(f: File): Array[File] = {

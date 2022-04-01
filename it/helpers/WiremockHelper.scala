@@ -23,10 +23,8 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import org.scalatest.concurrent.{Eventually, IntegrationPatience}
-import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatestplus.play.ServerProvider
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
-import play.api.http.Status
 import play.api.libs.ws.{WSClient, WSRequest}
 
 object WiremockHelper extends Eventually with IntegrationPatience {

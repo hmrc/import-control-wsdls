@@ -4,7 +4,7 @@ import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 val appName = "import-control-wsdls"
 
-val silencerVersion = "1.7.7"
+val silencerVersion = "1.7.11"
 
 lazy val coverageSettings: Seq[Setting[_]] = {
   Seq(
@@ -21,7 +21,7 @@ lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .settings(
     majorVersion := 0,
-    scalaVersion := "2.12.15",
+    scalaVersion := "2.13.8",
     (IntegrationTest / parallelExecution) := false,
     (Test / parallelExecution) := false,
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,

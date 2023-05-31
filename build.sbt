@@ -1,10 +1,12 @@
 import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings.integrationTestSettings
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
+import uk.gov.hmrc.DefaultBuildSettings.targetJvm
 
 val appName = "import-control-wsdls"
 
 val silencerVersion = "1.7.11"
+targetJvm := "jvm-11"
 
 lazy val coverageSettings: Seq[Setting[_]] = {
   Seq(

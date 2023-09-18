@@ -40,4 +40,4 @@ lazy val microservice = Project(appName, file("."))
   .settings(resolvers += Resolver.jcenterRepo)
   .settings((IntegrationTest / managedClasspath) += (Assets / packageBin).value)
 
-addCommandAlias("runAllChecks", "clean;compile;scalastyle;coverage;it:test;coverageReport")
+addCommandAlias("runAllChecks", "clean;compile;scalastyle;coverage;IntegrationTest/test;coverageReport")

@@ -21,7 +21,7 @@ import play.api.http.Status
 import java.io.{ByteArrayInputStream, File}
 import javax.wsdl.xml.WSDLReader
 import javax.wsdl.{Operation, PortType}
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.io.Source
 import scala.util.Try
 import scala.xml.XML

@@ -9,8 +9,8 @@ This service is used to get files for ICS2.
 
 ## Tests
 
-- Run Integration Tests: `sbt it:test`
-- Run Integration Tests with coverage report: `sbt runAllChecks`<br/> which runs `clean compile scalastyle coverage it:test coverageReport`
+- Run Integration Tests: `sbt IntegrationTest/test`
+- Run Integration Tests with coverage report: `sbt runAllChecks`<br/> which runs `clean compile scalastyle coverage IntegrationTest/test coverageReport`
 
 
 ## GET /assets/eu/outbound/CR-for-NES-Services/:fileNameAndPath

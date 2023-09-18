@@ -9,13 +9,17 @@ This service is used to get files for ICS2.
 
 ## Tests
 
-- Run Integration Tests: `sbt it:test`
-- Run Integration Tests with coverage report: `sbt runAllChecks`<br/> which runs `clean compile scalastyle coverage it:test coverageReport`
+- Run Integration Tests: `sbt IntegrationTest/test`
+- Run Integration Tests with coverage report: `sbt runAllChecks`<br/> which runs `clean compile scalastyle coverage IntegrationTest/test coverageReport`
 
+### Acceptance Tests
+Run Outbound ATs: see [here](https://github.com/hmrc/import-control-outbound-acceptance-tests)
 
-## GET /assets/eu/outbound/CR-for-NES-Services/:fileNameAndPath
-## GET /assets/eu/outbound/CR-for-NES-Services-V2/:fileNameAndPath
-
+## API endpoints
+| Method  | Route                                                                 |
+|---------|-----------------------------------------------------------------------|
+| GET     | /assets/eu/outbound/CR-for-NES-Services/:fileNameAndPath              | 
+| GET     | /assets/eu/outbound/CR-for-NES-Services-V2/:fileNameAndPath           | 
 
 Where 
  - `:fileNameAndPath` could be  any file within the `CR-for-NES-Services` and `CR-for-NES-Services-V2` file structures in the `public` folder

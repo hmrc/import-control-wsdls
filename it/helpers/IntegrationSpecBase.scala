@@ -16,7 +16,7 @@
 
 package helpers
 
-import akka.http.scaladsl.model.HttpResponse
+import org.apache.pekko.http.scaladsl.model.HttpResponse
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import helpers.WiremockHelper.stubPost
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}

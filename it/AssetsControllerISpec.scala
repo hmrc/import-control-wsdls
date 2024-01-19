@@ -15,10 +15,10 @@
  */
 
 import helpers.IntegrationSpecBase
-import org.apache.axis2.wsdl.WSDLUtil
 import play.api.http.Status
 
 import java.io.{ByteArrayInputStream, File}
+import javax.wsdl.factory.WSDLFactory
 import javax.wsdl.xml.WSDLReader
 import javax.wsdl.{Operation, PortType}
 import scala.jdk.CollectionConverters._
@@ -171,8 +171,7 @@ class AssetsControllerISpec extends IntegrationSpecBase {
   }
 
   def parseWsdlAndGetOperationsNames(wsdlUrl: String): List[String] = {
-    val reader: WSDLReader = WSDLUtil.newWSDLReaderWithPopulatedExtensionRegistry
-    reader.setFeature("javax.wsdl.importDocuments", true)
+    val reader: WSDLReader = WSDLFactory.newInstance().newWSDLReader()
     val wsdlDefinition = reader.readWSDL(wsdlUrl)
     val portType       = wsdlDefinition.getAllPortTypes.asScala.values.head.asInstanceOf[PortType]
     portType.getOperations.asScala.map(_.asInstanceOf[Operation].getName).toList

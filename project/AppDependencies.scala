@@ -10,6 +10,6 @@ object AppDependencies {
   )
 
   val test = Seq(
-    "uk.gov.hmrc"            %% "bootstrap-test-play-30"      % bootstrapVersion % "test, it"
+    "uk.gov.hmrc"            %% "bootstrap-test-play-30"      % bootstrapVersion % Test
   )
 }

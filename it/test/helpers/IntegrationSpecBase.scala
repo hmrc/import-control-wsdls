@@ -16,9 +16,9 @@
 
 package helpers
 
-import org.apache.pekko.http.scaladsl.model.HttpResponse
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import helpers.WiremockHelper.stubPost
+import org.apache.pekko.http.scaladsl.model.HttpResponse
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.time.{Millis, Seconds, Span}
@@ -30,8 +30,8 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.{DefaultAwaitTimeout, FutureAwaits}
 import play.api.{Application, Environment, Mode}
 
-import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext, Future}
 
 trait IntegrationSpecBase
   extends AnyWordSpec

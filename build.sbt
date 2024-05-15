@@ -22,25 +22,17 @@ lazy val microservice = Project(appName, file("."))
   .disablePlugins(JUnitXmlReportPlugin)
   .settings(
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
-//    libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always,
-//    scalacOptions += "-Wconf:src=routes/.*:s",
-//    scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s",
-//    Compile / unmanagedResourceDirectories += baseDirectory.value / "public",
+    (Compile / compile) := ((Compile / compile) dependsOn copyRes).value,
     PlayKeys.playDefaultPort := 7208
   )
-//  .settings(
-//    Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-eT"),
-//    Test / unmanagedSourceDirectories += baseDirectory.value / "it",
-//    Test / fork := false,
-//    Test / parallelExecution := false
-//  )
   .settings(coverageSettings: _*)
-//  .configs(IntegrationTest)
-//  .settings(integrationTestSettings(): _*)
   .settings(resolvers += Resolver.jcenterRepo)
-//  .settings((IntegrationTest / managedClasspath) += (Assets / packageBin).value)
 
-val root = file(".")
+val copyRes = taskKey[Unit]("Copy files from /public to /it/target/web/public/test/public directory for tests to access wsdls")
+
+copyRes := {
+  IO.copyDirectory(baseDirectory.value / "public", baseDirectory.value / "it" / "target" / "web" / "public" / "test" / "public")
+}
 
 lazy val it = (project in file("it"))
   .enablePlugins(PlayScala)
@@ -48,19 +40,12 @@ lazy val it = (project in file("it"))
   .settings(
     DefaultBuildSettings.itSettings(),
     libraryDependencies ++= AppDependencies.test,
-//    scalacOptions += "-language:postfixOps",
-//    Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-eT"),
-//    Test / unmanagedResourceDirectories += baseDirectory.value / "target" / "web" / "public" / "test",
-//    Compile / unmanagedResourceDirectories += root / "public",
-//    unmanagedSourceDirectories := Seq(
-//      baseDirectory.value / "it"
-//    ),
-//    unmanagedResourceDirectories := Seq(
-//      root / "public"
-//    ),
-//    Runtime / managedClasspath += (Assets / packageBin).value,
-//    parallelExecution := false,
-//    fork := true
+    Test / unmanagedResourceDirectories += baseDirectory.value / "target" / "web" / "public" / "test",
+    unmanagedSourceDirectories := Seq(
+      baseDirectory.value / "it"
+    ),
+    parallelExecution := false,
+    fork := true
   )
 
 (Runtime / managedClasspath) += (Assets / packageBin).value
@@ -69,4 +54,3 @@ addCommandAlias("runAllChecks", "clean;compile;scalastyle;coverage;it/test;cover
 
 // for all services
 scalacOptions += "-Wconf:cat=unused-imports&src=routes/.*:s"
-

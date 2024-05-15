@@ -25,14 +25,22 @@ lazy val microservice = Project(appName, file("."))
 //    libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always,
 //    scalacOptions += "-Wconf:src=routes/.*:s",
 //    scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s",
-    Compile / unmanagedResourceDirectories += baseDirectory.value / "public",
+//    Compile / unmanagedResourceDirectories += baseDirectory.value / "public",
     PlayKeys.playDefaultPort := 7208
   )
+//  .settings(
+//    Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-eT"),
+//    Test / unmanagedSourceDirectories += baseDirectory.value / "it",
+//    Test / fork := false,
+//    Test / parallelExecution := false
+//  )
   .settings(coverageSettings: _*)
 //  .configs(IntegrationTest)
 //  .settings(integrationTestSettings(): _*)
   .settings(resolvers += Resolver.jcenterRepo)
 //  .settings((IntegrationTest / managedClasspath) += (Assets / packageBin).value)
+
+val root = file(".")
 
 lazy val it = (project in file("it"))
   .enablePlugins(PlayScala)
@@ -40,16 +48,19 @@ lazy val it = (project in file("it"))
   .settings(
     DefaultBuildSettings.itSettings(),
     libraryDependencies ++= AppDependencies.test,
-    Compile / unmanagedResourceDirectories += baseDirectory.value / "public",
-    unmanagedSourceDirectories := Seq(
-      baseDirectory.value / "it"
-    ),
-    unmanagedResourceDirectories := Seq(
-      baseDirectory.value / "public"
-    ),
-//   Runtime / managedClasspath += (Assets / packageBin).value,
-    parallelExecution := false,
-    fork := true
+//    scalacOptions += "-language:postfixOps",
+//    Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-eT"),
+//    Test / unmanagedResourceDirectories += baseDirectory.value / "target" / "web" / "public" / "test",
+//    Compile / unmanagedResourceDirectories += root / "public",
+//    unmanagedSourceDirectories := Seq(
+//      baseDirectory.value / "it"
+//    ),
+//    unmanagedResourceDirectories := Seq(
+//      root / "public"
+//    ),
+//    Runtime / managedClasspath += (Assets / packageBin).value,
+//    parallelExecution := false,
+//    fork := true
   )
 
 (Runtime / managedClasspath) += (Assets / packageBin).value

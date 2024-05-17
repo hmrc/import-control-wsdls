@@ -22,16 +22,17 @@ lazy val microservice = Project(appName, file("."))
   .disablePlugins(JUnitXmlReportPlugin)
   .settings(
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
-    (Compile / compile) := ((Compile / compile) dependsOn copyRes).value,
+    (Compile / compile) := ((Compile / compile) dependsOn copyTestResources).value,
     PlayKeys.playDefaultPort := 7208
   )
   .settings(coverageSettings: _*)
   .settings(resolvers += Resolver.jcenterRepo)
 
-val copyRes = taskKey[Unit]("Copy files from /public to /it/target/web/public/test/public directory for tests to access wsdls")
+val testResourcesFolder = file("./it/target/web/public/test/public")
+val copyTestResources = taskKey[Unit]("Copy files from /public to /it/target/web/public/test/public directory for tests to access wsdls")
 
-copyRes := {
-  IO.copyDirectory(baseDirectory.value / "public", baseDirectory.value / "it" / "target" / "web" / "public" / "test" / "public")
+copyTestResources := {
+  IO.copyDirectory(baseDirectory.value / "public",  testResourcesFolder)
 }
 
 lazy val it = (project in file("it"))
@@ -40,7 +41,7 @@ lazy val it = (project in file("it"))
   .settings(
     DefaultBuildSettings.itSettings(),
     libraryDependencies ++= AppDependencies.test,
-    Test / unmanagedResourceDirectories += baseDirectory.value / "target" / "web" / "public" / "test",
+    Test / unmanagedResourceDirectories += testResourcesFolder / "test",
     unmanagedSourceDirectories := Seq(
       baseDirectory.value / "it"
     ),
@@ -50,7 +51,7 @@ lazy val it = (project in file("it"))
 
 (Runtime / managedClasspath) += (Assets / packageBin).value
 
-addCommandAlias("runAllChecks", "clean;compile;scalastyle;coverage;it/test;coverageReport")
+addCommandAlias("runAllChecks", "clean;compile;scalastyle;coverage;it/test;coverageReport;dependencyUpdates")
 
 // for all services
 scalacOptions += "-Wconf:cat=unused-imports&src=routes/.*:s"

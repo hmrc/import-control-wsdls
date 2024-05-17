@@ -21,8 +21,8 @@ import java.io.{ByteArrayInputStream, File}
 import javax.wsdl.factory.WSDLFactory
 import javax.wsdl.xml.WSDLReader
 import javax.wsdl.{Operation, PortType}
-import scala.jdk.CollectionConverters._
 import scala.io.Source
+import scala.jdk.CollectionConverters._
 import scala.util.Try
 import scala.xml.XML
 

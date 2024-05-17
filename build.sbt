@@ -1,7 +1,10 @@
 import scoverage.ScoverageKeys
-import uk.gov.hmrc.DefaultBuildSettings.integrationTestSettings
+import uk.gov.hmrc.DefaultBuildSettings
 
 val appName = "import-control-wsdls"
+
+ThisBuild / majorVersion := 0
+ThisBuild / scalaVersion := "2.13.14"
 
 lazy val coverageSettings: Seq[Setting[_]] = {
   Seq(
@@ -16,22 +19,39 @@ lazy val scalaStyleSettings = Seq(scalastyleFailOnError := true)
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
+  .disablePlugins(JUnitXmlReportPlugin)
   .settings(
-    majorVersion := 0,
-    scalaVersion := "2.13.12",
-    (IntegrationTest / parallelExecution) := false,
-    (Test / parallelExecution) := false,
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
+    (Compile / compile) := ((Compile / compile) dependsOn copyTestResources).value,
     PlayKeys.playDefaultPort := 7208
   )
   .settings(coverageSettings: _*)
-  .configs(IntegrationTest)
-  .settings(integrationTestSettings(): _*)
   .settings(resolvers += Resolver.jcenterRepo)
-  .settings((IntegrationTest / managedClasspath) += (Assets / packageBin).value)
 
-addCommandAlias("runAllChecks", "clean;compile;scalastyle;coverage;IntegrationTest/test;coverageReport")
+val testResourcesFolder = file("./it/target/web/public/test/public")
+val copyTestResources = taskKey[Unit]("Copy files from /public to /it/target/web/public/test/public directory for tests to access wsdls")
+
+copyTestResources := {
+  IO.copyDirectory(baseDirectory.value / "public",  testResourcesFolder)
+}
+
+lazy val it = (project in file("it"))
+  .enablePlugins(PlayScala)
+  .dependsOn(microservice % "test->test") // the "test->test" allows reusing test code and test dependencies
+  .settings(
+    DefaultBuildSettings.itSettings(),
+    libraryDependencies ++= AppDependencies.test,
+    Test / unmanagedResourceDirectories += testResourcesFolder / "test",
+    unmanagedSourceDirectories := Seq(
+      baseDirectory.value / "it"
+    ),
+    parallelExecution := false,
+    fork := true
+  )
+
+(Runtime / managedClasspath) += (Assets / packageBin).value
+
+addCommandAlias("runAllChecks", "clean;compile;scalastyle;coverage;it/test;coverageReport;dependencyUpdates")
 
 // for all services
-scalacOptions += "-Wconf:cat=unused-imports&src=routes/.*:s",
-
+scalacOptions += "-Wconf:cat=unused-imports&src=routes/.*:s"

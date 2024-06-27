@@ -51,7 +51,7 @@ lazy val it = (project in file("it"))
 
 (Runtime / managedClasspath) += (Assets / packageBin).value
 
-addCommandAlias("runAllChecks", "clean;compile;scalastyle;scalafmtALL;coverage;it/test;coverageReport;dependencyUpdates")
+addCommandAlias("runAllChecks", "clean;compile;scalastyle;scalafmtAll;coverage;it/test;coverageReport;dependencyUpdates")
 
 // for all services
 scalacOptions += "-Wconf:cat=unused-imports&src=routes/.*:s"

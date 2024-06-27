@@ -25,8 +25,8 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class AssetsController @Inject()(cc: ControllerComponents, assets: Assets)(implicit val ec: ExecutionContext)
-  extends BackendController(cc) {
+class AssetsController @Inject() (cc: ControllerComponents, assets: Assets)(implicit val ec: ExecutionContext)
+    extends BackendController(cc) {
 
   def at(file: String): Action[AnyContent] = Action.async { implicit request =>
     assets.at(file)(request)

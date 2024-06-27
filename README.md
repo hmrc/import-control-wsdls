@@ -10,7 +10,7 @@ This service is used to get files for ICS2.
 ## Tests
 
 - Run Integration Tests: `sbt IntegrationTest/test`
-- Run Integration Tests with coverage report: `sbt runAllChecks`<br/> which runs `clean compile scalastyle coverage IntegrationTest/test coverageReport`
+- Run Integration Tests with coverage report: `sbt runAllChecks`<br/> which runs `clean compile scalastyle scalafmtAll coverage IntegrationTest/test coverageReport dependencyUpdates`
 
 ### Acceptance Tests
 Run Outbound ATs: see [here](https://github.com/hmrc/import-control-outbound-acceptance-tests)

@@ -18,7 +18,7 @@ lazy val coverageSettings: Seq[Setting[_]] = {
 lazy val scalaStyleSettings = Seq(scalastyleFailOnError := true)
 
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
+  .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin, ScalafmtPlugin)
   .disablePlugins(JUnitXmlReportPlugin)
   .settings(
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
@@ -51,7 +51,7 @@ lazy val it = (project in file("it"))
 
 (Runtime / managedClasspath) += (Assets / packageBin).value
 
-addCommandAlias("runAllChecks", "clean;compile;scalastyle;coverage;it/test;coverageReport;dependencyUpdates")
+addCommandAlias("runAllChecks", "clean;compile;scalastyle;scalafmtAll;coverage;it/test;coverageReport;dependencyUpdates")
 
 // for all services
 scalacOptions += "-Wconf:cat=unused-imports&src=routes/.*:s"

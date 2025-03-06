@@ -21,9 +21,9 @@ Run Outbound ATs: see [here](https://github.com/hmrc/import-control-outbound-acc
 | GET     | /assets/eu/outbound/CR-for-NES-Services-V2/:fileNameAndPath           | 
 
 Where 
- - `:fileNameAndPath` could be  any file within the `CR-for-NES-Services` and `CR-for-NES-Services-V2` file structures in the `public` folder
+ - `:fileNameAndPath` could be  any file within the `CR-for-NES-Services-V2` file structures in the `public` folder
  
-With some common top level files referenced below for V1 and V2 to be used in the `import-control-outbound-proxy` microservice
+With some common top level files referenced below for V2 to be used in the `import-control-outbound-proxy` microservice
 
 V2:
 - BusinessActivityService/ICS/AEONotificationBAS/V2/CCN2.Service.Customs.EU.ICS.AEONotificationBAS_2.0.0_CCN2_2.0.0.wsdl

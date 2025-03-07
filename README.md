@@ -18,20 +18,12 @@ Run Outbound ATs: see [here](https://github.com/hmrc/import-control-outbound-acc
 ## API endpoints
 | Method  | Route                                                                 |
 |---------|-----------------------------------------------------------------------|
-| GET     | /assets/eu/outbound/CR-for-NES-Services/:fileNameAndPath              | 
 | GET     | /assets/eu/outbound/CR-for-NES-Services-V2/:fileNameAndPath           | 
 
 Where 
- - `:fileNameAndPath` could be  any file within the `CR-for-NES-Services` and `CR-for-NES-Services-V2` file structures in the `public` folder
+ - `:fileNameAndPath` could be  any file within the `CR-for-NES-Services-V2` file structures in the `public` folder
  
-With some common top level files referenced below for V1 and V2 to be used in the `import-control-outbound-proxy` microservice
-
-V1:
-- BusinessActivityService/ICS/ReferralManagementBAS/V1/CCN2.Service.Customs.Default.ICS.ReferralManagementBAS_1.0.0_1.0.0.wsdl
-- BusinessActivityService/ICS/ReferralManagementBAS/V1CCN2.Service.Customs.Default.ICS.ReferralManagementBAS_1.0.0_CCN2_1.0.0.wsdl
-- BusinessActivityService/ICS/RiskAnalysisOrchestrationBAS/V1/CCN2.Service.Customs.Default.ICS.RiskAnalysisOrchestrationBAS_1.0.0_1.0.0.wsdl
-- BusinessActivityService/ICS/RiskAnalysisOrchestrationBAS/V1/CCN2.Service.Customs.Default.ICS.RiskAnalysisOrchestrationBAS_1.0.0_CCN2_1.0.0.wsdl
-- Policies/CCN2/CCN2.Service.Platform.SecurityPolicies.wsdl
+With some common top level files referenced below for V2 to be used in the `import-control-outbound-proxy` microservice
 
 V2:
 - BusinessActivityService/ICS/AEONotificationBAS/V2/CCN2.Service.Customs.EU.ICS.AEONotificationBAS_2.0.0_CCN2_2.0.0.wsdl
@@ -49,10 +41,10 @@ HTTP Status code of 200 is returned with the file when `:fileNameAndPath` exists
 | `:fileNameAndPath` not recognised | `404` |
 
 ### Notes for Developer updating the files to the latest version
-
-- Previous Version of EU requirements `V1.24`, Current Version of EU requirements `V2.21` (March 2022)
-- The folder structure was directly copied from the EU documentation for both V1 and V2
-- Renamed the top level folders be to `CR-for-NES-Services` and `CR-for-NES-Services-V2`
+- V1 Files removed (March 2025)
+- Current Version of EU requirements `V2.21` (March 2022)
+- The folder structure was directly copied from the EU documentation for V2
+- Renamed the top level folder be to `CR-for-NES-Services-V2`
 - We replaced `{DestinationID}` in all filenames that contained it with `EU.CR`
 - We replaced http to https in `soap12:address location` and `wsa:Address` tags for wsdl's that contain "\_CCN2_\" within their filename e.g. CCN2.Service.Customs.EU.ICS.AEONotificationBAS_2.0.0_CCN2_2.0.0.wsdl. All other URLs that use http within those files are to remain unchanged. 
 

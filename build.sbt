@@ -4,9 +4,9 @@ import uk.gov.hmrc.DefaultBuildSettings
 val appName = "import-control-wsdls"
 
 ThisBuild / majorVersion := 0
-ThisBuild / scalaVersion := "2.13.14"
+ThisBuild / scalaVersion := "3.3.4"
 
-lazy val coverageSettings: Seq[Setting[_]] = {
+lazy val coverageSettings: Seq[Setting[?]] = {
   Seq(
     ScoverageKeys.coverageExcludedPackages := "<empty>;Reverse.*;models/.data/..*;view.*;models.*;config.*;.*(BuildInfo|Routes).*",
     ScoverageKeys.coverageMinimumStmtTotal := 100,
@@ -25,7 +25,7 @@ lazy val microservice = Project(appName, file("."))
     (Compile / compile) := ((Compile / compile) dependsOn copyTestResources).value,
     PlayKeys.playDefaultPort := 7208
   )
-  .settings(coverageSettings: _*)
+  .settings(coverageSettings *)
   .settings(resolvers += Resolver.jcenterRepo)
 
 val testResourcesFolder = file("./it/target/web/public/test/public")
@@ -54,4 +54,5 @@ lazy val it = (project in file("it"))
 addCommandAlias("runAllChecks", "clean;compile;scalastyle;scalafmtAll;coverage;it/test;coverageReport;dependencyUpdates")
 
 // for all services
-scalacOptions += "-Wconf:cat=unused-imports&src=routes/.*:s"
+scalacOptions += "-Wconf:msg=unused import&src=routes/*:s"
+scalacOptions += "-Wconf:msg=Flag.*repeatedly:s"

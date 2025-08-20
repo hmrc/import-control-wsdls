@@ -26,7 +26,6 @@ lazy val microservice = Project(appName, file("."))
     PlayKeys.playDefaultPort := 7208
   )
   .settings(coverageSettings *)
-  .settings(resolvers += Resolver.jcenterRepo)
 
 val testResourcesFolder = file("./it/target/web/public/test/public")
 val copyTestResources = taskKey[Unit]("Copy files from /public to /it/target/web/public/test/public directory for tests to access wsdls")
